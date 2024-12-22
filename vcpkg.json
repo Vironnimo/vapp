@@ -1,0 +1,17 @@
+{
+  "name": "myapp",
+  "version": "2.0.0",
+  "dependencies": [
+    "gtest",
+    "spdlog",
+    "glfw3",
+    "opengl",
+    {
+      "name": "imgui",
+      "features": [
+        "glfw-binding",
+        "opengl3-binding"
+      ]
+    }
+  ]
+}
