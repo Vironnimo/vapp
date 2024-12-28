@@ -64,12 +64,12 @@ void Gui::initImGui() {
 }
 
 void Gui::render() {
-    glfwPollEvents();
-    // close on esc
-    if (glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+    if (windowShouldClose) {
         glfwSetWindowShouldClose(m_window, GLFW_TRUE);
+        return;
     }
 
+    glfwPollEvents();
     startFrame();
     mainWindowBegin();
 
@@ -93,9 +93,12 @@ void Gui::render() {
     mainWindowEnd();
     endFrame();
 
-    if (static_cast<bool>(glfwWindowShouldClose(m_window)) != windowShouldClose) {
-        windowShouldClose = !windowShouldClose;
+    if (glfwWindowShouldClose(m_window) != 0) {
+        windowShouldClose = true;
     }
+    // if (static_cast<bool>(glfwWindowShouldClose(m_window)) != windowShouldClose) {
+    //     windowShouldClose = !windowShouldClose;
+    // }
 }
 
 void Gui::mainWindowBegin() const {

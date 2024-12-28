@@ -18,10 +18,14 @@ FetchContent_MakeAvailable(vconfig)
 set(SOURCES
     vapp/core/entry_point.cpp
     vapp/core/app_params.hpp
-    app/app.cpp
+    vapp/core/actions.cpp
     vapp/vapp.cpp
     vapp/gui/gui.cpp
     vapp/gui/gui_style.cpp
+    vapp/gui/fragment/i_base_fragment.hpp
+    app/app.cpp
+    app/example_class.cpp
+    app/example_fragment.cpp
 )
 
 add_executable(${PROJECT_NAME} 

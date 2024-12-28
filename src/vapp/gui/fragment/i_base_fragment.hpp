@@ -3,6 +3,7 @@
 #include <utility>
 
 #include "vapp/gui/gui_style.hpp"
+#include <imgui.h>
 
 namespace Vapp {
 
