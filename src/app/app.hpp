@@ -2,20 +2,22 @@
 
 #include <memory>
 
-#include "vapp/vapp.hpp"
 #include "example_class.hpp"
+#include "vapp/vapp.hpp"
 
 class App {
+   public:
+    int m_appValue = 1337;
+
    public:
     App();
     void run();
     void testStuff();
 
    private:
-    std::unique_ptr<Vapp::Vapp> m_vapp;
+    std::shared_ptr<Vapp::Vapp> m_vapp;
     ExampleClass* m_exampleClass = nullptr;
 
    private:
     void init();
-
 };

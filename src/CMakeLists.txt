@@ -19,6 +19,7 @@ set(SOURCES
     vapp/core/entry_point.cpp
     vapp/core/app_params.hpp
     vapp/core/actions.cpp
+    vapp/core/event_system.cpp
     vapp/vapp.cpp
     vapp/gui/gui.cpp
     vapp/gui/gui_style.cpp

@@ -11,6 +11,7 @@
 #include "gui/gui.hpp"
 #include "vapp/core/app_params.hpp"
 #include "vapp/core/actions.hpp"
+#include "vapp/core/event_system.hpp"
 
 namespace Vapp {
 
@@ -31,6 +32,7 @@ void Vapp::init() {
 #endif
 
     m_gui = std::make_unique<Gui>(m_appParams);
+    m_eventSystem = std::make_shared<EventSystem>();
 }
 
 void Vapp::initActions() {
@@ -47,6 +49,10 @@ void Vapp::initActions() {
 
 std::shared_ptr<Actions> Vapp::getActions() {
     return m_actions;
+}
+
+std::shared_ptr<EventSystem> Vapp::getEventSystem() {
+    return m_eventSystem;
 }
 
 void Vapp::attachFragment(std::unique_ptr<IBaseFragment> fragment) {
