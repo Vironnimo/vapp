@@ -48,6 +48,8 @@ class Action {
     std::vector<KeyBinding> m_keyBindings;
 };
 
+// todo add cooldown to hotkeys so we don't have rapid fire
+
 class Actions {
    public:
     void execute(const std::string& id);

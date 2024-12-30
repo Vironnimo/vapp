@@ -1,9 +1,12 @@
 #pragma once
 
-#include "vapp/gui/fragment/i_base_fragment.hpp"
+#include "vapp/gui/i_fragment.hpp"
 
-class TestFragment : public Vapp::IBaseFragment {
+class TestFragment : public Vapp::IFragment {
    public:
-    void draw();
+    TestFragment();
+    ~TestFragment();
+    void draw() override;
+
    private:
 };

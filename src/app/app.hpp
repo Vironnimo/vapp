@@ -11,12 +11,15 @@ class App {
 
    public:
     App();
+    ~App();
+    void loadResources();
+
     void run();
     void testStuff();
 
    private:
     std::shared_ptr<Vapp::Vapp> m_vapp;
-    ExampleClass* m_exampleClass = nullptr;
+    std::unique_ptr<ExampleClass> m_exampleClass;
 
    private:
     void init();

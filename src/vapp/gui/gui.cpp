@@ -10,15 +10,15 @@
 #include <memory>
 #include <utility>
 
-#include "gui_style.hpp"
+#include "theme.hpp"
 #include "vapp/core/app_params.hpp"
+#include "vapp/core/resource_manager.hpp"
 
 namespace Vapp {
 
-Gui::Gui(AppParams params) {
-    init(std::move(params));
-
+Gui::Gui(AppParams params, std::shared_ptr<ResourceManager> resourceManager) : m_appParams(std::move(params)), m_resourceManager(std::move(resourceManager)) {
     spdlog::debug("Gui Constructor");
+    init();
 }
 
 Gui::~Gui() {
@@ -29,14 +29,13 @@ Gui::~Gui() {
     ImGui::DestroyContext();
 }
 
-void Gui::init(AppParams params) {
-    m_appParams = std::move(params);
+void Gui::init() {
     initGlfw();
     m_window = createWindow(m_appParams);
     initImGui();
 
     // style stuff
-    m_style = std::make_shared<GuiStyle>();
+    m_style = std::make_shared<Theme>();
     m_style->enableDarkModeForWindow(m_window);
 
     // attachFragment(std::make_unique<CommandsFragment>());
@@ -64,6 +63,9 @@ void Gui::initImGui() {
 }
 
 void Gui::render() {
+    if (glfwWindowShouldClose(m_window) != 0) {
+        windowShouldClose = true;
+    }
     if (windowShouldClose) {
         glfwSetWindowShouldClose(m_window, GLFW_TRUE);
         return;
@@ -92,13 +94,6 @@ void Gui::render() {
     m_style->popDefaultStyle();
     mainWindowEnd();
     endFrame();
-
-    if (glfwWindowShouldClose(m_window) != 0) {
-        windowShouldClose = true;
-    }
-    // if (static_cast<bool>(glfwWindowShouldClose(m_window)) != windowShouldClose) {
-    //     windowShouldClose = !windowShouldClose;
-    // }
 }
 
 void Gui::mainWindowBegin() const {
@@ -137,9 +132,9 @@ void Gui::endFrame() {
     glfwSwapBuffers(m_window);
 }
 
-void Gui::attachFragment(std::unique_ptr<IBaseFragment> fragment) {
+void Gui::attachFragment(std::unique_ptr<IFragment> fragment) {
     fragment->setStyle(m_style);
-    fragment->setIO(&m_io);
+    fragment->setResourceManager(m_resourceManager);
     m_fragments.push_back(std::move(fragment));
 }
 

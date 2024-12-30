@@ -6,6 +6,9 @@
     "spdlog",
     "glfw3",
     "opengl",
+    "sdl2",
+    "sdl2-mixer",
+    "sdl2-image",
     {
       "name": "imgui",
       "features": [

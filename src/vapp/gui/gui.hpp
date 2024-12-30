@@ -6,8 +6,10 @@
 #include <string>
 
 #include "vapp/core/app_params.hpp"
-#include "fragment/i_base_fragment.hpp"
-#include "gui_style.hpp"
+#include "vapp/core/resource_manager.hpp"
+
+#include "i_fragment.hpp"
+#include "theme.hpp"
 
 namespace Vapp {
 
@@ -16,12 +18,12 @@ class Gui {
     bool windowShouldClose = false;
 
    public:
-    Gui(AppParams params);
+    Gui(AppParams params, std::shared_ptr<ResourceManager> resourceManager);
     ~Gui();
-    void init(AppParams params);
+    void init();
 
     void render();
-    void attachFragment(std::unique_ptr<IBaseFragment> fragment);
+    void attachFragment(std::unique_ptr<IFragment> fragment);
 
     GLFWwindow* getWindow() const;
     static void glfwErrorCallback(int error, const char* description);
@@ -43,8 +45,9 @@ class Gui {
     GLFWwindow* m_window = nullptr;
     AppParams m_appParams;
     ImGuiIO m_io;
-    std::shared_ptr<GuiStyle> m_style;
-    std::list<std::unique_ptr<IBaseFragment>> m_fragments;
+    std::shared_ptr<Theme> m_style;
+    std::shared_ptr<ResourceManager> m_resourceManager;
+    std::list<std::unique_ptr<IFragment>> m_fragments;
 };
 
 }  // namespace Vapp

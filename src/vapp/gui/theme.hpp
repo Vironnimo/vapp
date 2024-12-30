@@ -16,10 +16,10 @@ enum FontType {
     Awesome,
 };
 
-class GuiStyle {
+class Theme {
    public:
-    GuiStyle();
-    ~GuiStyle();
+    Theme();
+    ~Theme();
     void init();
 
     void pushFont(FontType type);

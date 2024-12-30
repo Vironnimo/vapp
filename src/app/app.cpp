@@ -9,6 +9,7 @@
 #include "example_fragment.hpp"
 #include "vapp/core/app_params.hpp"
 #include "vapp/core/event_system.hpp"
+#include "vapp/core/resource_manager.hpp"
 #include "vapp/vapp.hpp"
 
 void App::testStuff() {
@@ -22,7 +23,7 @@ void App::testStuff() {
         }
     });
 
-    m_exampleClass = new ExampleClass(m_vapp);
+    m_exampleClass = std::make_unique<ExampleClass>(m_vapp);
     m_vapp->getActions()->execute("app.example");
     m_vapp->getActions()->execute("app.example");
 
@@ -30,7 +31,20 @@ void App::testStuff() {
 }
 
 App::App() {
+    spdlog::debug("App Constructor");
     init();
+    loadResources();
+}
+
+App::~App() {
+    spdlog::debug("App Destructor");
+}
+
+void App::loadResources() {
+    auto rm = m_vapp->getResourceManager();
+
+    rm->load<Vapp::Sound>("click", "resources/click.wav");
+    rm->load<Vapp::Image>("snake", "resources/snake.png");
 }
 
 void App::run() {

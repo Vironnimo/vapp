@@ -18,7 +18,6 @@ namespace Vapp {
 Vapp::Vapp(AppParams appParams) : m_appParams(std::move(appParams)) {
     init();
     initActions();
-    spdlog::debug("Vapp Constructor");
 }
 
 void Vapp::init() {
@@ -31,8 +30,10 @@ void Vapp::init() {
     spdlog::set_default_logger(file_logger);
 #endif
 
-    m_gui = std::make_unique<Gui>(m_appParams);
+    spdlog::debug("Vapp Constructor");
     m_eventSystem = std::make_shared<EventSystem>();
+    m_resourceManager = std::make_shared<ResourceManager>();
+    m_gui = std::make_unique<Gui>(m_appParams, m_resourceManager);
 }
 
 void Vapp::initActions() {
@@ -55,7 +56,11 @@ std::shared_ptr<EventSystem> Vapp::getEventSystem() {
     return m_eventSystem;
 }
 
-void Vapp::attachFragment(std::unique_ptr<IBaseFragment> fragment) {
+std::shared_ptr<ResourceManager> Vapp::getResourceManager() {
+    return m_resourceManager;
+}
+
+void Vapp::attachFragment(std::unique_ptr<IFragment> fragment) {
     m_gui->attachFragment(std::move(fragment));
 }
 

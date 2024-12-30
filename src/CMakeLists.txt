@@ -2,11 +2,11 @@ find_package(spdlog CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(SDL2 CONFIG REQUIRED)
+find_package(SDL2_mixer CONFIG REQUIRED)
+find_package(SDL2_image CONFIG REQUIRED)
 
-# [cmake]     find_package(spdlog CONFIG REQUIRED)
-# [cmake]     target_link_libraries(main PRIVATE spdlog::spdlog)
-
-# FetchContent setup
+# load vconfig directly from git
 include(FetchContent)
 FetchContent_Declare(
     vconfig
@@ -16,14 +16,15 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(vconfig)
 
 set(SOURCES
+    vapp/vapp.cpp
     vapp/core/entry_point.cpp
     vapp/core/app_params.hpp
     vapp/core/actions.cpp
     vapp/core/event_system.cpp
-    vapp/vapp.cpp
+    vapp/core/resource_manager.cpp
     vapp/gui/gui.cpp
-    vapp/gui/gui_style.cpp
-    vapp/gui/fragment/i_base_fragment.hpp
+    vapp/gui/theme.cpp
+    vapp/gui/i_fragment.hpp
     app/app.cpp
     app/example_class.cpp
     app/example_fragment.cpp
@@ -39,12 +40,23 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     glfw
     OpenGL::GL
     vconfig
+    SDL2::SDL2
+    SDL2_mixer::SDL2_mixer
+    SDL2_image::SDL2_image
 )
+
+# target_link_libraries(${PROJECT_NAME} PRIVATE 
+#          $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
+#          $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
+# )
+# target_link_libraries(${PROJECT_NAME} PRIVATE $<IF:$<TARGET_EXISTS:SDL2_mixer::SDL2_mixer>,SDL2_mixer::SDL2_mixer,SDL2_mixer::SDL2_mixer-static>)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     file(COPY "${CMAKE_SOURCE_DIR}/fonts" DESTINATION "${CMAKE_BINARY_DIR}/src/Release")
+    file(COPY "${CMAKE_SOURCE_DIR}/resources" DESTINATION "${CMAKE_BINARY_DIR}/src/Release")
 else(CMAKE_BUILD_TYPE STREQUAL "Debug")
     file(COPY "${CMAKE_SOURCE_DIR}/fonts" DESTINATION "${CMAKE_BINARY_DIR}/src/Debug")
+    file(COPY "${CMAKE_SOURCE_DIR}/resources" DESTINATION "${CMAKE_BINARY_DIR}/src/Debug")
 endif()
 
 # file(COPY "${CMAKE_SOURCE_DIR}/fonts" DESTINATION "${CMAKE_BINARY_DIR}/src/Debug")

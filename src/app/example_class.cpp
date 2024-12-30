@@ -4,6 +4,14 @@
 
 #include "vapp/vapp.hpp"
 
+ExampleClass::ExampleClass() {
+    spdlog::debug("ExampleClass Constructor");
+}
+
+ExampleClass::~ExampleClass() {
+    spdlog::debug("ExampleClass Deconstructor");
+}
+
 ExampleClass::ExampleClass(std::shared_ptr<Vapp::Vapp> vapp) : m_vapp(std::move(vapp)) {
     m_vapp->getActions()->registerAction("app.example", "Example Action", [this]() {
         spdlog::debug("yeah, here is an example with the member variable value: {}", m_testValue);

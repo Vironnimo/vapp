@@ -1,4 +1,4 @@
-#include "gui_style.hpp"
+#include "theme.hpp"
 
 #include <dwmapi.h>
 #include <imgui.h>
@@ -15,16 +15,16 @@ namespace Vapp {
 
 // todo loaded fonts need to be unloaded, right?
 
-GuiStyle::GuiStyle() {
-    spdlog::debug("GuiStyle Constructor");
+Theme::Theme() {
+    spdlog::debug("Theme Constructor");
     init();
 }
 
-void GuiStyle::init() {
+void Theme::init() {
     loadFonts();
 }
 
-void GuiStyle::pushDefaultStyle() {
+void Theme::pushDefaultStyle() {
     ImGui::StyleColorsDark();
 
     ImGuiStyle& style = ImGui::GetStyle();
@@ -47,12 +47,12 @@ void GuiStyle::pushDefaultStyle() {
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));
 }
 
-void GuiStyle::popDefaultStyle() {
+void Theme::popDefaultStyle() {
     ImGui::PopStyleVar(4);
     ImGui::PopStyleColor(6);
 }
 
-void GuiStyle::loadFonts() {
+void Theme::loadFonts() {
     ImGuiIO& io = ImGui::GetIO();
 
     auto* normal = io.Fonts->AddFontFromFileTTF("fonts/Inter_24pt-Regular.ttf", 20.0f);
@@ -80,22 +80,22 @@ void GuiStyle::loadFonts() {
     io.FontDefault = m_fonts[FontType::Normal];
 }
 
-void GuiStyle::pushFont(const FontType type) {
+void Theme::pushFont(const FontType type) {
     ImGui::PushFont(m_fonts[type]);
 }
 
-void GuiStyle::popFont() {
+void Theme::popFont() {
     ImGui::PopFont();
 }
 
-void GuiStyle::enableDarkModeForWindow(GLFWwindow* window) {
+void Theme::enableDarkModeForWindow(GLFWwindow* window) {
     BOOL useDarkMode = TRUE;
     HWND hwnd = glfwGetWin32Window(window);
     DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &useDarkMode, sizeof(useDarkMode));
 }
 
-GuiStyle::~GuiStyle() {
-    spdlog::debug("GuiStyle Destructor");
+Theme::~Theme() {
+    spdlog::debug("Theme Destructor");
     // ImGui::GetIO().Fonts->Clear();
     m_fonts.clear();
 }
