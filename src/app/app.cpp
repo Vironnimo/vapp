@@ -13,6 +13,8 @@
 #include "vapp/vapp.hpp"
 
 void App::testStuff() {
+    m_vapp->timer()->setMaxFps(60);
+
     m_vapp->getEventSystem()->subscribe("example_event", [this](void* data) {
         spdlog::info("test event here. app class value: {}", m_appValue);
 
@@ -24,8 +26,8 @@ void App::testStuff() {
     });
 
     m_exampleClass = std::make_unique<ExampleClass>(m_vapp);
-    m_vapp->getActions()->execute("app.example");
-    m_vapp->getActions()->execute("app.example");
+    m_vapp->actions()->execute("app.example");
+    m_vapp->actions()->execute("app.example");
 
     m_vapp->attachFragment(std::make_unique<TestFragment>());
 }
@@ -43,8 +45,8 @@ App::~App() {
 void App::loadResources() {
     auto rm = m_vapp->getResourceManager();
 
-    rm->load<Vapp::Sound>("click", "resources/click.wav");
-    rm->load<Vapp::Image>("snake", "resources/snake.png");
+    rm->load<Vapp::Sound>("click", "click.wav");
+    rm->load<Vapp::Image>("snake", "snake.png");
 }
 
 void App::run() {
@@ -68,7 +70,7 @@ void App::init() {
             }
             ImGui::Separator();
             if (ImGui::MenuItem("Quit", "Alt+F4")) {
-                m_vapp->getActions()->execute("app.quit");
+                m_vapp->actions()->execute("app.quit");
                 spdlog::debug("Quit clicked");
             }
             ImGui::EndMenu();

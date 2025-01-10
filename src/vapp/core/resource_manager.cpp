@@ -1,5 +1,7 @@
 #include "resource_manager.hpp"
 
+#include <filesystem>
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_image.h>
@@ -15,6 +17,12 @@ ResourceManager::ResourceManager() {
 }
 
 void ResourceManager::init() {
+    // TODO use this
+    m_resourceRoot = std::filesystem::path("resources");
+    // m_imagesPath = m_resourceRoot / "images";
+    // m_fontsPath = m_resourceRoot / "fonts";
+    // m_soundsPath = m_resourceRoot / "sounds";
+
     // sdl init
     if (SDL_Init(SDL_INIT_AUDIO) < 0) {
         spdlog::warn("failed to init sdl: {}", SDL_GetError());
@@ -34,8 +42,8 @@ void ResourceManager::init() {
 
 ResourceManager::~ResourceManager() {
     spdlog::debug("ResourceManager Destructor");
-    for (auto [id, resource] : m_resources) {
-        auto res = static_cast<IResource*>(resource.get());
+    for (const auto& [id, resource] : m_resources) {
+        auto* res = static_cast<IResource*>(resource.get());
         if (res) {
             res->unload();
         }

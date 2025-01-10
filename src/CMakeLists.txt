@@ -22,6 +22,7 @@ set(SOURCES
     vapp/core/actions.cpp
     vapp/core/event_system.cpp
     vapp/core/resource_manager.cpp
+    vapp/core/timer.cpp
     vapp/gui/gui.cpp
     vapp/gui/theme.cpp
     vapp/gui/i_fragment.hpp
@@ -45,19 +46,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     SDL2_image::SDL2_image
 )
 
-# target_link_libraries(${PROJECT_NAME} PRIVATE 
-#          $<TARGET_NAME_IF_EXISTS:SDL2::SDL2main>
-#          $<IF:$<TARGET_EXISTS:SDL2::SDL2>,SDL2::SDL2,SDL2::SDL2-static>
-# )
-# target_link_libraries(${PROJECT_NAME} PRIVATE $<IF:$<TARGET_EXISTS:SDL2_mixer::SDL2_mixer>,SDL2_mixer::SDL2_mixer,SDL2_mixer::SDL2_mixer-static>)
-
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    file(COPY "${CMAKE_SOURCE_DIR}/fonts" DESTINATION "${CMAKE_BINARY_DIR}/src/Release")
     file(COPY "${CMAKE_SOURCE_DIR}/resources" DESTINATION "${CMAKE_BINARY_DIR}/src/Release")
 else(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    file(COPY "${CMAKE_SOURCE_DIR}/fonts" DESTINATION "${CMAKE_BINARY_DIR}/src/Debug")
     file(COPY "${CMAKE_SOURCE_DIR}/resources" DESTINATION "${CMAKE_BINARY_DIR}/src/Debug")
 endif()
-
-# file(COPY "${CMAKE_SOURCE_DIR}/fonts" DESTINATION "${CMAKE_BINARY_DIR}/src/Debug")
-# file(COPY "${CMAKE_SOURCE_DIR}/fonts" DESTINATION "${CMAKE_BINARY_DIR}/src/Release")

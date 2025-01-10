@@ -4,6 +4,9 @@
 #include <imgui.h>
 #include <windows.h>
 
+#include <filesystem>
+
+
 #pragma comment(lib, "dwmapi.lib")
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
@@ -54,12 +57,16 @@ void Theme::popDefaultStyle() {
 
 void Theme::loadFonts() {
     ImGuiIO& io = ImGui::GetIO();
+    auto fontsRoot = std::filesystem::path("resources/fonts");
+    auto inter24Regular = fontsRoot / "inter_24_regular.ttf";
+    auto inter24Bold = fontsRoot / "inter_24_bold.ttf";
+    auto fontAwesome = fontsRoot / "fa_400_regular.ttf";
 
-    auto* normal = io.Fonts->AddFontFromFileTTF("fonts/Inter_24pt-Regular.ttf", 20.0f);
-    auto* bold = io.Fonts->AddFontFromFileTTF("fonts/Inter_24pt-Bold.ttf", 22.0f);
-    auto* header1 = io.Fonts->AddFontFromFileTTF("fonts/Inter_24pt-Bold.ttf", 45.0f);
-    auto* header2 = io.Fonts->AddFontFromFileTTF("fonts/Inter_24pt-Bold.ttf", 33.0f);
-    auto* header3 = io.Fonts->AddFontFromFileTTF("fonts/Inter_24pt-Bold.ttf", 28.0f);
+    auto* normal = io.Fonts->AddFontFromFileTTF(inter24Regular.string().c_str(), 20.0f);
+    auto* bold = io.Fonts->AddFontFromFileTTF(inter24Bold.string().c_str(), 22.0f);
+    auto* header1 = io.Fonts->AddFontFromFileTTF(inter24Bold.string().c_str(), 45.0f);
+    auto* header2 = io.Fonts->AddFontFromFileTTF(inter24Bold.string().c_str(), 33.0f);
+    auto* header3 = io.Fonts->AddFontFromFileTTF(inter24Bold.string().c_str(), 28.0f);
 
     // load font awesome
     static const ImWchar icons_ranges[] = {ICON_MIN_FA, ICON_MAX_16_FA, 0};
@@ -68,7 +75,7 @@ void Theme::loadFonts() {
     config.MergeMode = true;
     config.PixelSnapH = true;
     config.GlyphMinAdvanceX = 13.0f;
-    auto* awesome = io.Fonts->AddFontFromFileTTF("fonts/fa-regular-400.ttf", 28.0f, &config, icons_ranges);
+    auto* awesome = io.Fonts->AddFontFromFileTTF(fontAwesome.string().c_str(), 28.0f, &config, icons_ranges);
 
     m_fonts[FontType::Normal] = normal;
     m_fonts[FontType::Bold] = bold;

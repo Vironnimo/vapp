@@ -116,7 +116,7 @@ void Gui::startFrame() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    m_io = ImGui::GetIO();  // needs to be updated every frame so it has the right values
+    m_io = ImGui::GetIO();  // TODO REMOVE. needs to be updated every frame so it has the right values
 }
 
 void Gui::endFrame() {
@@ -159,8 +159,8 @@ void Gui::centerWindow(AppParams& params, GLFWwindow* window) {
     if (primaryMonitor != nullptr) {
         const GLFWvidmode* vidMode = glfwGetVideoMode(primaryMonitor);
 
-        const int windowPosX = (vidMode->width - (params.window_width / 2)) / 2;
-        const int windowPosY = (vidMode->height - (params.window_height / 2)) / 2;
+        const int windowPosX = vidMode->width / 2 - params.window_width / 2;
+        const int windowPosY = vidMode->height / 2 - params.window_height / 2;
 
         glfwSetWindowPos(window, windowPosX, windowPosY);
     }

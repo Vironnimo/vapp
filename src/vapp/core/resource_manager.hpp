@@ -1,22 +1,25 @@
 #pragma once
 
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <unordered_map>
+
 #define SDL_MAIN_HANDLED  // sdl tries to inject its own main(), nope.
-#include <imgui.h>
 #include <GLFW/glfw3.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
+#include <imgui.h>
 #include <spdlog/spdlog.h>
+
 
 namespace Vapp {
 
 class IResource {
    public:
     virtual ~IResource() = default;
-    virtual bool loadFromFile(const std::string& path) = 0;
+    virtual bool loadFromFile(const std::string& fileName) = 0;
     virtual void unload() = 0;
 
    protected:
@@ -25,17 +28,23 @@ class IResource {
 
 class Sound : public IResource {
    public:
-    bool loadFromFile(const std::string& path) override {
-        m_chunk = Mix_LoadWAV(path.c_str());
+    bool loadFromFile(const std::string& fileName) override {
+        auto folder = std::filesystem::path("resources/sounds");
+        auto fullPath = folder / fileName;
+        m_chunk = Mix_LoadWAV(fullPath.string().c_str());
         if (!m_chunk) {
             spdlog::info("failed to load sound: {}", Mix_GetError());
+            return false;
         }
 
-        m_isLoaded = false;
+        m_isLoaded = true;
         return true;
     }
 
     void unload() override {
+        if (!m_isLoaded) {
+            return;
+        }
         Mix_FreeChunk(m_chunk);
         m_chunk = nullptr;
         m_isLoaded = false;
@@ -52,8 +61,10 @@ class Sound : public IResource {
 
 class Image : IResource {
    public:
-    bool loadFromFile(const std::string& path) override {
-        SDL_Surface* surface = IMG_Load(path.c_str());
+    bool loadFromFile(const std::string& fileName) override {
+        auto folder = std::filesystem::path("resources/images");
+        auto fullPath = folder / fileName;
+        SDL_Surface* surface = IMG_Load(fullPath.string().c_str());
         if (!surface) {
             spdlog::info("failed to load image: {}", IMG_GetError());
             return false;
@@ -114,9 +125,9 @@ class ResourceManager {
     void init();
 
     template <typename T>
-    void load(const std::string& name, const std::string& path) {
+    void load(const std::string& name, const std::string& fileName) {
         auto resource = std::make_shared<T>();
-        if (resource->loadFromFile(path)) {
+        if (resource->loadFromFile(fileName)) {
             m_resources[name] = resource;
         }
     }
@@ -132,6 +143,11 @@ class ResourceManager {
     }
 
    private:
+    std::filesystem::path m_resourceRoot;
+    // std::filesystem::path m_soundsPath;
+    // std::filesystem::path m_imagesPath;
+    // std::filesystem::path m_fontsPath;
+
     std::unordered_map<std::string, std::shared_ptr<void>> m_resources;
 };
 

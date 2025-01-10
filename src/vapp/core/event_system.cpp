@@ -4,7 +4,7 @@ namespace Vapp {
 
 void EventSystem::subscribe(const std::string& eventName, std::function<void(void*)> callback) {
     auto& observers = m_observers[eventName];  // automatically creates field for eventname, if it doesn't exist
-    observers.push_back(callback);
+    observers.push_back(std::move(callback));
 }
 
 void EventSystem::emit(const std::string& eventName, void* data) {

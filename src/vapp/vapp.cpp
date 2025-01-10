@@ -8,10 +8,11 @@
 #include <utility>
 #include <vector>
 
-#include "gui/gui.hpp"
-#include "vapp/core/app_params.hpp"
+#include "vapp/gui/gui.hpp"
 #include "vapp/core/actions.hpp"
+#include "vapp/core/app_params.hpp"
 #include "vapp/core/event_system.hpp"
+#include "vapp/core/timer.hpp"
 
 namespace Vapp {
 
@@ -34,6 +35,7 @@ void Vapp::init() {
     m_eventSystem = std::make_shared<EventSystem>();
     m_resourceManager = std::make_shared<ResourceManager>();
     m_gui = std::make_unique<Gui>(m_appParams, m_resourceManager);
+    m_timer = std::make_shared<Timer>();
 }
 
 void Vapp::initActions() {
@@ -48,7 +50,18 @@ void Vapp::initActions() {
     m_actions->addKeybinding("app.quit", {GLFW_KEY_Q, false, false, false});
 }
 
-std::shared_ptr<Actions> Vapp::getActions() {
+void Vapp::run() {
+    spdlog::debug("run App");
+
+    while (!m_gui->windowShouldClose) {
+        m_timer->update();
+
+        m_actions->handleInput(m_gui->getWindow());
+        m_gui->render();
+    }
+}
+
+std::shared_ptr<Actions> Vapp::actions() {
     return m_actions;
 }
 
@@ -60,17 +73,12 @@ std::shared_ptr<ResourceManager> Vapp::getResourceManager() {
     return m_resourceManager;
 }
 
-void Vapp::attachFragment(std::unique_ptr<IFragment> fragment) {
-    m_gui->attachFragment(std::move(fragment));
+std::shared_ptr<Timer> Vapp::timer() {
+    return m_timer;
 }
 
-void Vapp::run() {
-    spdlog::debug("run App");
-
-    while (!m_gui->windowShouldClose) {
-        m_actions->handleInput(m_gui->getWindow());
-        m_gui->render();
-    }
+void Vapp::attachFragment(std::unique_ptr<IFragment> fragment) {
+    m_gui->attachFragment(std::move(fragment));
 }
 
 Vapp::~Vapp() {
