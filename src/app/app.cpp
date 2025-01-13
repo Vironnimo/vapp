@@ -13,9 +13,7 @@
 #include "vapp/vapp.hpp"
 
 void App::testStuff() {
-    m_vapp->timer()->setMaxFps(60);
-
-    m_vapp->getEventSystem()->subscribe("example_event", [this](void* data) {
+    m_vapp->events()->subscribe("example_event", [this](void* data) {
         spdlog::info("test event here. app class value: {}", m_appValue);
 
         // need to dereference the value to use it
@@ -25,7 +23,6 @@ void App::testStuff() {
         }
     });
 
-    m_exampleClass = std::make_unique<ExampleClass>(m_vapp);
     m_vapp->actions()->execute("app.example");
     m_vapp->actions()->execute("app.example");
 
@@ -33,31 +30,39 @@ void App::testStuff() {
 }
 
 App::App() {
-    spdlog::debug("App Constructor");
+    spdlog::debug("Constructor App");
     init();
     loadResources();
+    testStuff();
 }
 
 App::~App() {
-    spdlog::debug("App Destructor");
+    spdlog::debug("Destructor App");
 }
 
 void App::loadResources() {
-    auto rm = m_vapp->getResourceManager();
+    m_vapp->timer()->start("resources");
+    auto rm = m_vapp->resources();
+
+    rm->load<Vapp::Image>("snake", "snake.png");
+
+    auto get = m_vapp->timer()->get("resources");
 
     rm->load<Vapp::Sound>("click", "click.wav");
-    rm->load<Vapp::Image>("snake", "snake.png");
+
+    auto end = m_vapp->timer()->end("resources");
+    spdlog::info("Timer - load Resources: {} ms", end);
 }
 
 void App::run() {
-    testStuff();
-
     m_vapp->run();
 }
 
 void App::init() {
     // setup Vapp
     Vapp::AppParams appParams;
+    appParams.maxFps = 60;
+    // appParams.useFileLogger = true;
     // create menucallback if a menubar is wanted
     appParams.menuCallback = [this]() {
         if (ImGui::BeginMenu("File")) {
@@ -70,11 +75,16 @@ void App::init() {
             }
             ImGui::Separator();
             if (ImGui::MenuItem("Quit", "Alt+F4")) {
+                spdlog::info("Menu: Quit clicked");
                 m_vapp->actions()->execute("app.quit");
-                spdlog::debug("Quit clicked");
             }
             ImGui::EndMenu();
         }
     };
     m_vapp = std::make_shared<Vapp::Vapp>(appParams);
+    auto startTime = m_vapp->timer()->get("app.start");
+    Vapp::log.info("Vapp Startup Time: {} ms", startTime);
+    
+
+    m_exampleClass = std::make_unique<ExampleClass>(m_vapp);
 }

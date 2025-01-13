@@ -2,6 +2,7 @@
 
 #include <map>
 #include <GLFW/glfw3.h>
+#include <IconsFontAwesome.h>
 
 struct ImFont;
 

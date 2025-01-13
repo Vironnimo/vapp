@@ -4,6 +4,7 @@
   "dependencies": [
     "gtest",
     "spdlog",
+    "sqlitecpp",
     "glfw3",
     "opengl",
     "sdl2",

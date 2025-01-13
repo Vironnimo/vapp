@@ -11,7 +11,7 @@
 namespace Vapp {
 
 ResourceManager::ResourceManager() {
-    spdlog::debug("ResourceManager Constructor");
+    spdlog::debug("Constructor ResourceManager");
     init();
     // IN CMAKE COPY RESOURCES FOLDER AND MOVE FONTS THERE
 }
@@ -41,7 +41,7 @@ void ResourceManager::init() {
 }
 
 ResourceManager::~ResourceManager() {
-    spdlog::debug("ResourceManager Destructor");
+    spdlog::debug("Destructor ResourceManager");
     for (const auto& [id, resource] : m_resources) {
         auto* res = static_cast<IResource*>(resource.get());
         if (res) {

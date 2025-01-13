@@ -3,9 +3,7 @@
 #include <dwmapi.h>
 #include <imgui.h>
 #include <windows.h>
-
 #include <filesystem>
-
 
 #pragma comment(lib, "dwmapi.lib")
 #include <GLFW/glfw3.h>
@@ -19,7 +17,7 @@ namespace Vapp {
 // todo loaded fonts need to be unloaded, right?
 
 Theme::Theme() {
-    spdlog::debug("Theme Constructor");
+    spdlog::debug("Constructor Theme");
     init();
 }
 
@@ -102,7 +100,7 @@ void Theme::enableDarkModeForWindow(GLFWwindow* window) {
 }
 
 Theme::~Theme() {
-    spdlog::debug("Theme Destructor");
+    spdlog::debug("Destructor Theme");
     // ImGui::GetIO().Fonts->Clear();
     m_fonts.clear();
 }

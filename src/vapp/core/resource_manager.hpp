@@ -51,7 +51,6 @@ class Sound : public IResource {
     }
 
     void play() {
-        spdlog::info("playing sound");
         Mix_PlayChannel(-1, m_chunk, 0);
     }
 
@@ -119,6 +118,7 @@ class Image : IResource {
 };
 
 class ResourceManager {
+    // todo create method for adding a resource, but only load it once it's actually used (lazy load)
    public:
     ResourceManager();
     ~ResourceManager();

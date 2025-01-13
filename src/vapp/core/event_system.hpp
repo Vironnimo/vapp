@@ -8,6 +8,9 @@ namespace Vapp {
 
 class EventSystem {
    public:
+    EventSystem();
+    ~EventSystem();
+
     void subscribe(const std::string& eventName, std::function<void(void*)> callback);
     void emit(const std::string& eventName, void* data = nullptr);
 

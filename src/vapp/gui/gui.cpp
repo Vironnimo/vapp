@@ -17,12 +17,12 @@
 namespace Vapp {
 
 Gui::Gui(AppParams params, std::shared_ptr<ResourceManager> resourceManager) : m_appParams(std::move(params)), m_resourceManager(std::move(resourceManager)) {
-    spdlog::debug("Gui Constructor");
+    spdlog::debug("Constructor Gui");
     init();
 }
 
 Gui::~Gui() {
-    spdlog::debug("Gui Destructor");
+    spdlog::debug("Destructor Gui");
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
@@ -139,15 +139,15 @@ void Gui::attachFragment(std::unique_ptr<IFragment> fragment) {
 }
 
 GLFWwindow* Gui::createWindow(AppParams& params) {
-    auto* window = glfwCreateWindow(params.window_width, params.window_height, params.window_title.c_str(), nullptr, nullptr);
+    auto* window = glfwCreateWindow(params.windowWidth, params.windowHeight, params.windowTitle.c_str(), nullptr, nullptr);
     if (window == nullptr) {
         spdlog::error("Failed to create GLFW window");
         return nullptr;
     }
 
     glfwMakeContextCurrent(window);
-    glfwSetWindowSizeLimits(window, params.window_min_width, params.window_min_height, GLFW_DONT_CARE, GLFW_DONT_CARE);
-    if (params.window_centered) {
+    glfwSetWindowSizeLimits(window, params.windowWidthMin, params.windowHeightMin, GLFW_DONT_CARE, GLFW_DONT_CARE);
+    if (params.windowCentered) {
         centerWindow(params, window);
     }
 
@@ -159,8 +159,8 @@ void Gui::centerWindow(AppParams& params, GLFWwindow* window) {
     if (primaryMonitor != nullptr) {
         const GLFWvidmode* vidMode = glfwGetVideoMode(primaryMonitor);
 
-        const int windowPosX = vidMode->width / 2 - params.window_width / 2;
-        const int windowPosY = vidMode->height / 2 - params.window_height / 2;
+        const int windowPosX = vidMode->width / 2 - params.windowWidth / 2;
+        const int windowPosY = vidMode->height / 2 - params.windowHeight / 2;
 
         glfwSetWindowPos(window, windowPosX, windowPosY);
     }

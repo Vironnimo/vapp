@@ -1,8 +1,17 @@
 #include "actions.hpp"
 
 #include <memory>
+#include <spdlog/spdlog.h>
 
 namespace Vapp {
+
+Actions::Actions() {
+    spdlog::debug("Constructor Actions");
+}
+
+Actions::~Actions() {
+    spdlog::debug("Destructor Actions");
+}
 
 void Actions::execute(const std::string& id) {
     auto it = m_actions.find(id);
@@ -11,7 +20,7 @@ void Actions::execute(const std::string& id) {
     }
 }
 
-void Actions::registerAction(const std::string& id, const std::string& name, std::function<void()> callback) {
+void Actions::add(const std::string& id, const std::string& name, std::function<void()> callback) {
     m_actions.emplace(id, std::make_unique<Action>(id, name, std::move(callback)));
 }
 

@@ -1,4 +1,5 @@
 find_package(spdlog CONFIG REQUIRED)
+find_package(SQLiteCpp CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
@@ -19,10 +20,12 @@ set(SOURCES
     vapp/vapp.cpp
     vapp/core/entry_point.cpp
     vapp/core/app_params.hpp
+    vapp/core/database.cpp
     vapp/core/actions.cpp
     vapp/core/event_system.cpp
     vapp/core/resource_manager.cpp
     vapp/core/timer.cpp
+    vapp/core/logger.cpp
     vapp/gui/gui.cpp
     vapp/gui/theme.cpp
     vapp/gui/i_fragment.hpp
@@ -37,6 +40,7 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
     spdlog::spdlog
+    SQLiteCpp
     imgui::imgui
     glfw
     OpenGL::GL

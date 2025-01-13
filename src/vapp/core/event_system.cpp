@@ -1,6 +1,16 @@
 #include "event_system.hpp"
 
+#include <spdlog/spdlog.h>
+
 namespace Vapp {
+
+EventSystem::EventSystem() {
+    spdlog::debug("Constructor EventSystem");
+}
+
+EventSystem::~EventSystem() {
+    spdlog::debug("Destructor EventSystem");
+}
 
 void EventSystem::subscribe(const std::string& eventName, std::function<void(void*)> callback) {
     auto& observers = m_observers[eventName];  // automatically creates field for eventname, if it doesn't exist
