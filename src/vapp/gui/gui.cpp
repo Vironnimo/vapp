@@ -10,13 +10,15 @@
 #include <memory>
 #include <utility>
 
-#include "theme.hpp"
-#include "vapp/core/app_params.hpp"
+#include "vapp/gui/theme.hpp"
+#include "vapp/core/app_settings.hpp"
 #include "vapp/core/resource_manager.hpp"
+#include "vapp/vapp.hpp"
 
 namespace Vapp {
 
-Gui::Gui(AppParams params, std::shared_ptr<ResourceManager> resourceManager) : m_appParams(std::move(params)), m_resourceManager(std::move(resourceManager)) {
+Gui::Gui(AppSettings params, Vapp* vapp) 
+    : m_settings(std::move(params)), m_vapp(vapp) {
     spdlog::debug("Constructor Gui");
     init();
 }
@@ -31,14 +33,12 @@ Gui::~Gui() {
 
 void Gui::init() {
     initGlfw();
-    m_window = createWindow(m_appParams);
+    m_window = createWindow(m_settings);
     initImGui();
 
     // style stuff
     m_style = std::make_shared<Theme>();
     m_style->enableDarkModeForWindow(m_window);
-
-    // attachFragment(std::make_unique<CommandsFragment>());
 }
 
 bool Gui::initGlfw() {
@@ -54,8 +54,7 @@ bool Gui::initGlfw() {
 void Gui::initImGui() {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    m_io = ImGui::GetIO();
-    m_io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // enable keyboard controls
+    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // enable keyboard controls
 
     // init opengl for imgui
     ImGui_ImplGlfw_InitForOpenGL(m_window, true);
@@ -77,9 +76,9 @@ void Gui::render() {
 
     // render menu, if available
     // make extra style for menu
-    if (m_appParams.menuCallback) {
+    if (m_settings.menuCallback) {
         if (ImGui::BeginMenuBar()) {
-            m_appParams.menuCallback();
+            m_settings.menuCallback();
 
             ImGui::EndMenuBar();
         }
@@ -102,7 +101,7 @@ void Gui::mainWindowBegin() const {
     ImGuiWindowFlags flags =
         ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
 
-    if (m_appParams.menuCallback) {
+    if (m_settings.menuCallback) {
         flags |= ImGuiWindowFlags_MenuBar;
     }
     ImGui::Begin("##main_window", nullptr, flags);
@@ -116,7 +115,6 @@ void Gui::startFrame() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-    m_io = ImGui::GetIO();  // TODO REMOVE. needs to be updated every frame so it has the right values
 }
 
 void Gui::endFrame() {
@@ -134,11 +132,11 @@ void Gui::endFrame() {
 
 void Gui::attachFragment(std::unique_ptr<IFragment> fragment) {
     fragment->setStyle(m_style);
-    fragment->setResourceManager(m_resourceManager);
+    fragment->setVapp(m_vapp);
     m_fragments.push_back(std::move(fragment));
 }
 
-GLFWwindow* Gui::createWindow(AppParams& params) {
+GLFWwindow* Gui::createWindow(AppSettings& params) {
     auto* window = glfwCreateWindow(params.windowWidth, params.windowHeight, params.windowTitle.c_str(), nullptr, nullptr);
     if (window == nullptr) {
         spdlog::error("Failed to create GLFW window");
@@ -154,7 +152,7 @@ GLFWwindow* Gui::createWindow(AppParams& params) {
     return window;
 }
 
-void Gui::centerWindow(AppParams& params, GLFWwindow* window) {
+void Gui::centerWindow(AppSettings& params, GLFWwindow* window) {
     GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
     if (primaryMonitor != nullptr) {
         const GLFWvidmode* vidMode = glfwGetVideoMode(primaryMonitor);

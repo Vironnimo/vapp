@@ -3,6 +3,8 @@
 #include <imgui.h>
 #include <spdlog/spdlog.h>
 
+#include "vapp/vapp.hpp"
+
 TestFragment::TestFragment() {
     spdlog::debug("Constructor TestFragment");
 }
@@ -23,11 +25,11 @@ void TestFragment::draw() {
 
     if (ImGui::Button("Click Sound")) {
         spdlog::info("Button: playing click sound");
-        auto sound = m_resourceManager->get<Vapp::Sound>("click");
+        auto* sound = m_vapp->resources()->get<Vapp::Sound>("click");
         sound->play();
     }
 
-    auto img = m_resourceManager->get<Vapp::Image>("snake");
+    auto* img = m_vapp->resources()->get<Vapp::Image>("snake");
     ImGui::Image(img->getTexture(), ImVec2(img->getWidth() * 0.5, img->getHeight() * 0.5));
 
     ImGui::EndChild();

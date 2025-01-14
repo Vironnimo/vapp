@@ -6,7 +6,7 @@
 
 namespace Vapp {
 
-struct AppParams {
+struct AppSettings {
     // window settings
     std::string windowTitle = "My App";
     bool windowCentered = true;

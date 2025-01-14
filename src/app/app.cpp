@@ -7,7 +7,7 @@
 
 #include "example_class.hpp"
 #include "example_fragment.hpp"
-#include "vapp/core/app_params.hpp"
+#include "vapp/core/app_settings.hpp"
 #include "vapp/core/event_system.hpp"
 #include "vapp/core/resource_manager.hpp"
 #include "vapp/vapp.hpp"
@@ -41,17 +41,9 @@ App::~App() {
 }
 
 void App::loadResources() {
-    m_vapp->timer()->start("resources");
     auto rm = m_vapp->resources();
-
     rm->load<Vapp::Image>("snake", "snake.png");
-
-    auto get = m_vapp->timer()->get("resources");
-
     rm->load<Vapp::Sound>("click", "click.wav");
-
-    auto end = m_vapp->timer()->end("resources");
-    spdlog::info("Timer - load Resources: {} ms", end);
 }
 
 void App::run() {
@@ -60,11 +52,11 @@ void App::run() {
 
 void App::init() {
     // setup Vapp
-    Vapp::AppParams appParams;
-    appParams.maxFps = 60;
-    // appParams.useFileLogger = true;
+    Vapp::AppSettings settings;
+    settings.maxFps = 60;
+    // settings.useFileLogger = true;
     // create menucallback if a menubar is wanted
-    appParams.menuCallback = [this]() {
+    settings.menuCallback = [this]() {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("New", "Ctrl+N")) {
             }
@@ -81,7 +73,9 @@ void App::init() {
             ImGui::EndMenu();
         }
     };
-    m_vapp = std::make_shared<Vapp::Vapp>(appParams);
+    m_vapp = std::make_shared<Vapp::Vapp>(settings);
+    m_vapp->init();
+
     auto startTime = m_vapp->timer()->get("app.start");
     Vapp::log.info("Vapp Startup Time: {} ms", startTime);
     

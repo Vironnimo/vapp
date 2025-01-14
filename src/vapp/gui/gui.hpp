@@ -5,7 +5,7 @@
 #include <list>
 #include <string>
 
-#include "vapp/core/app_params.hpp"
+#include "vapp/core/app_settings.hpp"
 #include "vapp/core/resource_manager.hpp"
 
 #include "i_fragment.hpp"
@@ -13,12 +13,14 @@
 
 namespace Vapp {
 
+class Vapp;
+
 class Gui {
    public:
     bool windowShouldClose = false;
 
    public:
-    Gui(AppParams params, std::shared_ptr<ResourceManager> resourceManager);
+    Gui(AppSettings params, Vapp* vapp);
     ~Gui();
     void init();
 
@@ -38,15 +40,14 @@ class Gui {
     void mainWindowBegin() const;
     void mainWindowEnd();
 
-    GLFWwindow* createWindow(AppParams& params);
-    void centerWindow(AppParams& params, GLFWwindow* window);
+    GLFWwindow* createWindow(AppSettings& params);
+    void centerWindow(AppSettings& params, GLFWwindow* window);
 
    private:
     GLFWwindow* m_window = nullptr;
-    AppParams m_appParams;
-    ImGuiIO m_io;
+    Vapp* m_vapp = nullptr; // we use a raw pointer here because we don't like weak pointers and how they are being used.
+    AppSettings m_settings;
     std::shared_ptr<Theme> m_style;
-    std::shared_ptr<ResourceManager> m_resourceManager;
     std::list<std::unique_ptr<IFragment>> m_fragments;
 };
 

@@ -9,7 +9,7 @@
 #include <vector>
 
 #include "vapp/core/actions.hpp"
-#include "vapp/core/app_params.hpp"
+#include "vapp/core/app_settings.hpp"
 #include "vapp/core/database.hpp"
 #include "vapp/core/event_system.hpp"
 #include "vapp/core/logger.hpp"
@@ -18,9 +18,7 @@
 
 namespace Vapp {
 
-Vapp::Vapp(AppParams appParams) : m_appParams(std::move(appParams)) {
-    init();
-    initActions();
+Vapp::Vapp(AppSettings appParams) : m_settings(std::move(appParams)) {
 }
 
 void Vapp::init() {
@@ -32,26 +30,28 @@ void Vapp::init() {
     //     auto file_logger = spdlog::basic_logger_mt("file_logger", "logs.txt");
     //     spdlog::set_default_logger(file_logger);
     // #endif
-    log.setLogLevel(m_appParams.logLevel);
-    if (m_appParams.useFileLogger) {
-        log.useFileLogger(m_appParams.loggerFile);
+    log.setLogLevel(m_settings.logLevel);
+    if (m_settings.useFileLogger) {
+        log.useFileLogger(m_settings.loggerFile);
     }
 
     spdlog::debug("Constructor Vapp");
+
     m_timer = std::make_shared<Timer>();
     m_timer->start("app.start");
-    if (m_appParams.maxFps > 0) {
-        m_timer->setMaxFps(m_appParams.maxFps);
+    if (m_settings.maxFps > 0) {
+        m_timer->setMaxFps(m_settings.maxFps);
     }
     m_eventSystem = std::make_shared<EventSystem>();
     m_resourceManager = std::make_shared<ResourceManager>();
-    m_gui = std::make_unique<Gui>(m_appParams, m_resourceManager);
     m_db = std::make_shared<Database>("vapp.db3");
+    m_actions = std::make_shared<Actions>();
+    initActions();
+    m_gui = std::make_unique<Gui>(m_settings, this);
 }
 
-void Vapp::initActions() {
-    m_actions = std::make_shared<Actions>();
 
+void Vapp::initActions() {
     m_actions->add("app.quit", "Quit App", [this]() {
         spdlog::info("Action from Vapp: App quitting..");
         m_gui->windowShouldClose = true;

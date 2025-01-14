@@ -19,7 +19,7 @@ FetchContent_MakeAvailable(vconfig)
 set(SOURCES
     vapp/vapp.cpp
     vapp/core/entry_point.cpp
-    vapp/core/app_params.hpp
+    vapp/core/app_settings.hpp
     vapp/core/database.cpp
     vapp/core/actions.cpp
     vapp/core/event_system.cpp

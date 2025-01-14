@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "vapp/core/app_params.hpp"
+#include "vapp/core/app_settings.hpp"
 #include "vapp/core/actions.hpp"
 #include "vapp/gui/gui.hpp"
 #include "vapp/gui/i_fragment.hpp"
@@ -13,9 +13,9 @@
 
 namespace Vapp {
 
-class Vapp {
+class Vapp : public std::enable_shared_from_this<Vapp> {
    public:
-    Vapp(AppParams appParams = AppParams());
+    Vapp(AppSettings appParams = AppSettings());
     ~Vapp();
     void init();
     void initActions();
@@ -31,7 +31,7 @@ class Vapp {
     void run();
 
    private:
-    AppParams m_appParams;
+    AppSettings m_settings;
     std::shared_ptr<Actions> m_actions;
     std::unique_ptr<Gui> m_gui;
     std::shared_ptr<Database> m_db;
