@@ -11,14 +11,11 @@
 #include <utility>
 
 #include "vapp/gui/theme.hpp"
-#include "vapp/core/app_settings.hpp"
-#include "vapp/core/resource_manager.hpp"
 #include "vapp/vapp.hpp"
 
 namespace Vapp {
 
-Gui::Gui(AppSettings params, Vapp* vapp) 
-    : m_settings(std::move(params)), m_vapp(vapp) {
+Gui::Gui(Vapp* vapp) : m_vapp(vapp) {
     spdlog::debug("Constructor Gui");
     init();
 }
@@ -33,7 +30,7 @@ Gui::~Gui() {
 
 void Gui::init() {
     initGlfw();
-    m_window = createWindow(m_settings);
+    m_window = createWindow(m_vapp->settings());
     initImGui();
 
     // style stuff
@@ -76,9 +73,9 @@ void Gui::render() {
 
     // render menu, if available
     // make extra style for menu
-    if (m_settings.menuCallback) {
+    if (m_vapp->settings()->menuCallback) {
         if (ImGui::BeginMenuBar()) {
-            m_settings.menuCallback();
+            m_vapp->settings()->menuCallback();
 
             ImGui::EndMenuBar();
         }
@@ -101,7 +98,7 @@ void Gui::mainWindowBegin() const {
     ImGuiWindowFlags flags =
         ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
 
-    if (m_settings.menuCallback) {
+    if (m_vapp->settings()->menuCallback) {
         flags |= ImGuiWindowFlags_MenuBar;
     }
     ImGui::Begin("##main_window", nullptr, flags);
@@ -136,29 +133,29 @@ void Gui::attachFragment(std::unique_ptr<IFragment> fragment) {
     m_fragments.push_back(std::move(fragment));
 }
 
-GLFWwindow* Gui::createWindow(AppSettings& params) {
-    auto* window = glfwCreateWindow(params.windowWidth, params.windowHeight, params.windowTitle.c_str(), nullptr, nullptr);
+GLFWwindow* Gui::createWindow(std::shared_ptr<AppSettings> settings) {
+    auto* window = glfwCreateWindow(settings->windowWidth, settings->windowHeight, settings->windowTitle.c_str(), nullptr, nullptr);
     if (window == nullptr) {
         spdlog::error("Failed to create GLFW window");
         return nullptr;
     }
 
     glfwMakeContextCurrent(window);
-    glfwSetWindowSizeLimits(window, params.windowWidthMin, params.windowHeightMin, GLFW_DONT_CARE, GLFW_DONT_CARE);
-    if (params.windowCentered) {
-        centerWindow(params, window);
+    glfwSetWindowSizeLimits(window, settings->windowWidthMin, settings->windowHeightMin, GLFW_DONT_CARE, GLFW_DONT_CARE);
+    if (settings->windowCentered) {
+        centerWindow(m_vapp->settings(), window);
     }
 
     return window;
 }
 
-void Gui::centerWindow(AppSettings& params, GLFWwindow* window) {
+void Gui::centerWindow(std::shared_ptr<AppSettings> settings, GLFWwindow* window) {
     GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
     if (primaryMonitor != nullptr) {
         const GLFWvidmode* vidMode = glfwGetVideoMode(primaryMonitor);
 
-        const int windowPosX = vidMode->width / 2 - params.windowWidth / 2;
-        const int windowPosY = vidMode->height / 2 - params.windowHeight / 2;
+        const int windowPosX = vidMode->width / 2 - settings->windowWidth / 2;
+        const int windowPosY = vidMode->height / 2 - settings->windowHeight / 2;
 
         glfwSetWindowPos(window, windowPosX, windowPosY);
     }

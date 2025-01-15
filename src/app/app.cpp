@@ -7,9 +7,7 @@
 
 #include "example_class.hpp"
 #include "example_fragment.hpp"
-#include "vapp/core/app_settings.hpp"
-#include "vapp/core/event_system.hpp"
-#include "vapp/core/resource_manager.hpp"
+
 #include "vapp/vapp.hpp"
 
 void App::testStuff() {
@@ -74,7 +72,6 @@ void App::init() {
         }
     };
     m_vapp = std::make_shared<Vapp::Vapp>(settings);
-    m_vapp->init();
 
     auto startTime = m_vapp->timer()->get("app.start");
     Vapp::log.info("Vapp Startup Time: {} ms", startTime);

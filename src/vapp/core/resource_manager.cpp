@@ -7,21 +7,15 @@
 #include <SDL2/SDL_image.h>
 #include <spdlog/spdlog.h>
 
-
 namespace Vapp {
 
 ResourceManager::ResourceManager() {
     spdlog::debug("Constructor ResourceManager");
     init();
-    // IN CMAKE COPY RESOURCES FOLDER AND MOVE FONTS THERE
 }
 
 void ResourceManager::init() {
-    // TODO use this
     m_resourceRoot = std::filesystem::path("resources");
-    // m_imagesPath = m_resourceRoot / "images";
-    // m_fontsPath = m_resourceRoot / "fonts";
-    // m_soundsPath = m_resourceRoot / "sounds";
 
     // sdl init
     if (SDL_Init(SDL_INIT_AUDIO) < 0) {

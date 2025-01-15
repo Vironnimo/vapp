@@ -20,7 +20,7 @@ class Gui {
     bool windowShouldClose = false;
 
    public:
-    Gui(AppSettings params, Vapp* vapp);
+    Gui(Vapp* vapp);
     ~Gui();
     void init();
 
@@ -40,13 +40,12 @@ class Gui {
     void mainWindowBegin() const;
     void mainWindowEnd();
 
-    GLFWwindow* createWindow(AppSettings& params);
-    void centerWindow(AppSettings& params, GLFWwindow* window);
+    GLFWwindow* createWindow(std::shared_ptr<AppSettings> settings);
+    void centerWindow(std::shared_ptr<AppSettings> settings, GLFWwindow* window);
 
    private:
     GLFWwindow* m_window = nullptr;
-    Vapp* m_vapp = nullptr; // we use a raw pointer here because we don't like weak pointers and how they are being used.
-    AppSettings m_settings;
+    Vapp* m_vapp = nullptr; // we use a raw pointer here because we don't like weak pointers and how to use them.
     std::shared_ptr<Theme> m_style;
     std::list<std::unique_ptr<IFragment>> m_fragments;
 };

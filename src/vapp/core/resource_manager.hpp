@@ -144,9 +144,6 @@ class ResourceManager {
 
    private:
     std::filesystem::path m_resourceRoot;
-    // std::filesystem::path m_soundsPath;
-    // std::filesystem::path m_imagesPath;
-    // std::filesystem::path m_fontsPath;
 
     std::unordered_map<std::string, std::shared_ptr<void>> m_resources;
 };

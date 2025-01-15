@@ -13,9 +13,9 @@
 
 namespace Vapp {
 
-class Vapp : public std::enable_shared_from_this<Vapp> {
+class Vapp {
    public:
-    Vapp(AppSettings appParams = AppSettings());
+    Vapp(AppSettings settings = AppSettings());
     ~Vapp();
     void init();
     void initActions();
@@ -25,15 +25,16 @@ class Vapp : public std::enable_shared_from_this<Vapp> {
     std::shared_ptr<ResourceManager> resources();
     std::shared_ptr<Timer> timer();
     std::shared_ptr<Database> database();
+    std::shared_ptr<AppSettings> settings();
 
     void attachFragment(std::unique_ptr<IFragment> fragment);
 
     void run();
 
    private:
-    AppSettings m_settings;
-    std::shared_ptr<Actions> m_actions;
     std::unique_ptr<Gui> m_gui;
+    std::shared_ptr<AppSettings> m_settings;
+    std::shared_ptr<Actions> m_actions;
     std::shared_ptr<Database> m_db;
     std::shared_ptr<EventSystem> m_eventSystem;
     std::shared_ptr<ResourceManager> m_resourceManager;

@@ -18,7 +18,8 @@
 
 namespace Vapp {
 
-Vapp::Vapp(AppSettings appParams) : m_settings(std::move(appParams)) {
+Vapp::Vapp(AppSettings settings) : m_settings(std::make_shared<AppSettings>(std::move(settings))) {
+    init();
 }
 
 void Vapp::init() {
@@ -30,24 +31,24 @@ void Vapp::init() {
     //     auto file_logger = spdlog::basic_logger_mt("file_logger", "logs.txt");
     //     spdlog::set_default_logger(file_logger);
     // #endif
-    log.setLogLevel(m_settings.logLevel);
-    if (m_settings.useFileLogger) {
-        log.useFileLogger(m_settings.loggerFile);
+    log.setLogLevel(m_settings->logLevel);
+    if (m_settings->useFileLogger) {
+        log.useFileLogger(m_settings->loggerFile);
     }
 
     spdlog::debug("Constructor Vapp");
 
     m_timer = std::make_shared<Timer>();
     m_timer->start("app.start");
-    if (m_settings.maxFps > 0) {
-        m_timer->setMaxFps(m_settings.maxFps);
+    if (m_settings->maxFps > 0) {
+        m_timer->setMaxFps(m_settings->maxFps);
     }
     m_eventSystem = std::make_shared<EventSystem>();
     m_resourceManager = std::make_shared<ResourceManager>();
     m_db = std::make_shared<Database>("vapp.db3");
     m_actions = std::make_shared<Actions>();
     initActions();
-    m_gui = std::make_unique<Gui>(m_settings, this);
+    m_gui = std::make_unique<Gui>(this);
 }
 
 
@@ -91,6 +92,10 @@ std::shared_ptr<Timer> Vapp::timer() {
 
 std::shared_ptr<Database> Vapp::database() {
     return m_db;
+}
+
+std::shared_ptr<AppSettings> Vapp::settings() {
+    return m_settings;
 }
 
 void Vapp::attachFragment(std::unique_ptr<IFragment> fragment) {
