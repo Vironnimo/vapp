@@ -1,6 +1,8 @@
 find_package(spdlog CONFIG REQUIRED)
 find_package(SQLiteCpp CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
+find_package(CURL REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(SDL2 CONFIG REQUIRED)
@@ -26,6 +28,7 @@ set(SOURCES
     vapp/core/resource_manager.cpp
     vapp/core/timer.cpp
     vapp/core/logger.cpp
+    vapp/core/network.cpp
     vapp/gui/gui.cpp
     vapp/gui/theme.cpp
     vapp/gui/i_fragment.hpp
@@ -42,6 +45,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     spdlog::spdlog
     SQLiteCpp
     imgui::imgui
+    CURL::libcurl
+    nlohmann_json::nlohmann_json
     glfw
     OpenGL::GL
     vconfig

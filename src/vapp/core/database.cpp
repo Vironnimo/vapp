@@ -18,8 +18,15 @@ SQLite::Statement Database::query(const std::string& queryString) {
     return query;
 }
 
-void Database::exec(const std::string& query) {
-    m_db->exec(query);
+bool Database::exec(const std::string& query) {
+    if (query.empty()) {
+        return false;
+    }
+    if (m_db->exec(query) > 0) {
+        return true;
+    }
+
+    return false;
 }
 
 }  // namespace Vapp

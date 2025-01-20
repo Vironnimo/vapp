@@ -15,6 +15,7 @@
 #include "vapp/core/logger.hpp"
 #include "vapp/core/timer.hpp"
 #include "vapp/gui/gui.hpp"
+#include "vapp/core/network.hpp"
 
 namespace Vapp {
 
@@ -49,8 +50,10 @@ void Vapp::init() {
     m_actions = std::make_shared<Actions>();
     initActions();
     m_gui = std::make_unique<Gui>(this);
-}
+    m_network = std::make_unique<Network>(); 
 
+    // testing
+}
 
 void Vapp::initActions() {
     m_actions->add("app.quit", "Quit App", [this]() {
@@ -96,6 +99,10 @@ std::shared_ptr<Database> Vapp::database() {
 
 std::shared_ptr<AppSettings> Vapp::settings() {
     return m_settings;
+}
+
+std::shared_ptr<Network> Vapp::network() {
+    return m_network;
 }
 
 void Vapp::attachFragment(std::unique_ptr<IFragment> fragment) {

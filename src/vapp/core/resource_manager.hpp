@@ -13,14 +13,13 @@
 #include <imgui.h>
 #include <spdlog/spdlog.h>
 
-
 namespace Vapp {
 
 class IResource {
    public:
     virtual ~IResource() = default;
     virtual bool loadFromFile(const std::string& fileName) = 0;
-    virtual void unload() = 0;
+    virtual bool unload() = 0;
 
    protected:
     bool m_isLoaded = false;
@@ -41,13 +40,15 @@ class Sound : public IResource {
         return true;
     }
 
-    void unload() override {
+    bool unload() override {
         if (!m_isLoaded) {
-            return;
+            return false;
         }
         Mix_FreeChunk(m_chunk);
         m_chunk = nullptr;
         m_isLoaded = false;
+
+        return true;
     }
 
     void play() {
@@ -87,12 +88,15 @@ class Image : IResource {
         return true;
     }
 
-    void unload() override {
-        if (m_isLoaded) {
-            glDeleteTextures(1, &m_textureID);
-            m_textureID = 0;
-            m_isLoaded = false;
+    bool unload() override {
+        if (!m_isLoaded) {
+            return false;
         }
+        glDeleteTextures(1, &m_textureID);
+        m_textureID = 0;
+        m_isLoaded = false;
+
+        return true;
     }
 
     ImTextureID getTexture() const {
@@ -125,11 +129,14 @@ class ResourceManager {
     void init();
 
     template <typename T>
-    void load(const std::string& name, const std::string& fileName) {
+    bool load(const std::string& name, const std::string& fileName) {
         auto resource = std::make_shared<T>();
         if (resource->loadFromFile(fileName)) {
             m_resources[name] = resource;
+            return true;
         }
+
+        return false;
     }
 
     template <typename T>

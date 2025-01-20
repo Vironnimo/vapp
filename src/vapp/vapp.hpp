@@ -10,6 +10,7 @@
 #include "vapp/core/resource_manager.hpp"
 #include "vapp/core/timer.hpp"
 #include "vapp/core/database.hpp"
+#include "vapp/core/network.hpp"
 
 namespace Vapp {
 
@@ -26,6 +27,7 @@ class Vapp {
     std::shared_ptr<Timer> timer();
     std::shared_ptr<Database> database();
     std::shared_ptr<AppSettings> settings();
+    std::shared_ptr<Network> network();
 
     void attachFragment(std::unique_ptr<IFragment> fragment);
 
@@ -39,6 +41,7 @@ class Vapp {
     std::shared_ptr<EventSystem> m_eventSystem;
     std::shared_ptr<ResourceManager> m_resourceManager;
     std::shared_ptr<Timer> m_timer;
+    std::shared_ptr<Network> m_network;
 };
 
 }  // namespace Vapp

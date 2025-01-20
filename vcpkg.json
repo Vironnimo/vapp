@@ -7,6 +7,8 @@
     "sqlitecpp",
     "glfw3",
     "opengl",
+    "curl",
+    "nlohmann-json",
     "sdl2",
     "sdl2-mixer",
     "sdl2-image",

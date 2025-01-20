@@ -20,8 +20,14 @@ void Actions::execute(const std::string& id) {
     }
 }
 
-void Actions::add(const std::string& id, const std::string& name, std::function<void()> callback) {
+bool Actions::add(const std::string& id, const std::string& name, std::function<void()> callback) {
+    auto it = m_actions.find(id);
+    if (it != m_actions.end()) {
+        return false;
+    }
+
     m_actions.emplace(id, std::make_unique<Action>(id, name, std::move(callback)));
+    return true;
 }
 
 void Actions::addKeybinding(const std::string& actionId, KeyBinding keyBind) {

@@ -13,7 +13,7 @@ class Database {
     ~Database();
 
     SQLite::Statement query(const std::string& query);
-    void exec(const std::string& query);
+    bool exec(const std::string& query);
 
    private:
    std::unique_ptr<SQLite::Database> m_db;

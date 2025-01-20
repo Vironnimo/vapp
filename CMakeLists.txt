@@ -8,6 +8,11 @@ project(vapp)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/vendor)
 
+# enables multi threading
+if(MSVC)
+    add_compile_options(/MP)
+endif()
+
 add_subdirectory(src)
 
 enable_testing()

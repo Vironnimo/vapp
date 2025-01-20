@@ -56,7 +56,7 @@ class Actions {
     ~Actions();
 
     void execute(const std::string& id);
-    void add(const std::string& id, const std::string& name, std::function<void()> callback);
+    bool add(const std::string& id, const std::string& name, std::function<void()> callback);
     void addKeybinding(const std::string& actionId, KeyBinding keyBind);
 
     bool isKeyBindingPressed(GLFWwindow* window, const KeyBinding& keyBind);
