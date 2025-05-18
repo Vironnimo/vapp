@@ -1,8 +1,11 @@
 #include "example_class.hpp"
 
+#include <fstream>
 #include <spdlog/spdlog.h>
+#include <vosk/vosk_api.h>
 
 #include "vapp/vapp.hpp"
+#include "audio_recorder.hpp"
 
 void ExampleClass::databaseExamples() {
     m_vapp->database()->exec("DROP TABLE IF EXISTS test");
@@ -24,22 +27,100 @@ void ExampleClass::databaseExamples() {
 ExampleClass::ExampleClass(std::shared_ptr<Vapp::Vapp> vapp) : m_vapp(std::move(vapp)) {
     spdlog::debug("Constructor ExampleClass");
 
-    Vapp::ApiRequest request;
-    request.url = "https://jsonplaceholder.typicode.com/posts";
-    auto response = m_vapp->network()->apiRequest(request);
-    spdlog::info("Response (700 chars):\n{}", response.raw.substr(0, 700));
-    spdlog::info("First entry:");
-    for (const auto& entry : response.asJson) {
-        auto id = entry["id"].get<int>();
-        auto userId = entry["userId"].get<int>();
-        auto title = entry["title"].get<std::string>();
-        auto body = entry["body"].get<std::string>();
-
-        spdlog::info("ID: {}\nUserID: {}\nTitle: {}\nBody: {}", id, userId, title, body);
-        break;
+    // audio recorder
+    auto recorder = std::make_shared<AudioRecorder>();
+    if (!recorder->initialize()) {
+        spdlog::error("Failed to initialize audio recorder");
+        return;
     }
-    auto first = response.asJson[0];
-    spdlog::info("TEEEEEEEST:::  {}", first["id"].get<int>());
+    recorder->recordToFile("resources/sounds/recording_from_inside.wav", 10);
+
+    // vosk stuff
+    VoskModel *model = vosk_model_new("resources/vosk-model-small-en-us-0.15");
+    VoskRecognizer *rec = vosk_recognizer_new(model, 16000.0f);
+
+    // loading a small WAV for test:
+    std::ifstream wf("resources/sounds/recording.wav", std::ios::binary);
+    wf.seekg(44);  // skip WAV header
+    std::vector<char> buf(4096);
+    while (wf.read(buf.data(), buf.size()) || wf.gcount()) {
+        vosk_recognizer_accept_waveform(rec, buf.data(), wf.gcount());
+    }
+
+    // json result
+    const char *json_res = vosk_recognizer_final_result(rec);
+    spdlog::info("Transcription JSON → {}", json_res);
+
+    vosk_recognizer_free(rec);
+    vosk_model_free(model);
+
+    // chatgpt request
+    // auto gptKey = ;
+    // Vapp::ApiRequest chatGptRequest;
+    // chatGptRequest.url = "https://api.openai.com/v1/responses";
+    // chatGptRequest.method = "POST";
+    // // chatGptRequest.method = Vapp::ApiRequest::POST;
+    // chatGptRequest.apiKey = gptKey;
+    // chatGptRequest.body = R"({
+    //     "model": "gpt-3.5-turbo",
+    //     "input": "Hello! How are you?"
+    // })";
+    // auto chatGptResponse = m_vapp->network()->apiRequest(chatGptRequest);
+    // spdlog::info("ChatGPT Response (700 chars):\n{}", chatGptResponse.raw.substr(0, 700));
+    // spdlog::info("ChatGPT Response (JSON):\n{}", chatGptResponse.asJson.dump(4));
+
+    // hugging face request
+    // start timer for api request
+    // auto huggingFaceKey = ;
+    // m_vapp->timer()->start("hugging_face_request");
+    // Vapp::ApiRequest huggingFaceRequest;
+    // huggingFaceRequest.url = "https://router.huggingface.co/novita/v3/openai/chat/completions";
+    // huggingFaceRequest.method = "POST";
+    // huggingFaceRequest.apiKey = huggingFaceKey;
+    // huggingFaceRequest.body = R"({
+    // "messages": [
+    //     {
+    //         "role": "system",
+    //         "content":"You are a JSON‐only command generator.  You *must* output *only* valid JSON text.  Every key and
+    //         string value must be enclosed in double quotes (\\\"key\\\": \\\"value\\\").  Do NOT output anything else—not
+    //         even formatting or code fences!"
+    //     },
+    //     {
+    //         "role": "user",
+    //         "content": "Create a folder at C:/temp/my_new_folder"
+    //     }
+    // ],
+    // "model": "deepseek/deepseek-v3-0324",
+    // "stream": false
+    // })";
+    // auto huggingFaceResponse = m_vapp->network()->apiRequest(huggingFaceRequest);
+    // auto elapsed = m_vapp->timer()->end("hugging_face_request");
+    // spdlog::info("Request took {} ms", elapsed);
+    // auto message = huggingFaceResponse.asJson["choices"][0]["message"]["content"].get<std::string>();
+    // if (message.rfind("```", 0) == 0) {
+    //     message.erase(0, 3);
+    //     if (auto p = message.rfind("```"); p != std::string::npos) {
+    //         message.erase(p);
+    //     }
+    // }
+    // if (auto pos = message.find('{'); pos != std::string::npos) {
+    //     message.erase(0, pos);
+    // }
+    // spdlog::info("Hugging Face Response (message):\n{}", message);
+    // try {
+    //     auto cmd = nlohmann::json::parse(message);
+    //     auto name = cmd.at("command").get<std::string>();
+    //     spdlog::info("Command: {}", name);
+    //     auto args = cmd.at("args");
+    //     auto path = args.at(0).get<std::string>();
+    //     // spdlog::info("Args: {}", args.dump(4));
+    //     spdlog::info("Path: {}", path);
+    // } catch (const std::exception& e) {
+    //     spdlog::error("Failed to parse AI JSON response: {}", e.what());
+    // }
+    // spdlog::info("Hugging Face Response (message):\n{}", message.dump(4));
+    // spdlog::info("Hugging Face Response (700 chars):\n{}", huggingFaceResponse.raw.substr(0, 700));
+    // spdlog::info("Hugging Face Response (JSON):\n{}", huggingFaceResponse.asJson.dump(4));
 
     databaseExamples();
 
@@ -50,13 +131,12 @@ ExampleClass::ExampleClass(std::shared_ptr<Vapp::Vapp> vapp) : m_vapp(std::move(
         m_testValue++;
     });
     m_vapp->actions()->addKeybinding("app.example", {GLFW_KEY_S, false, false, false});
-    m_vapp->actions()->add("app.event_test", "Action: Example Action with Event trigger",
-                           [this]() { m_vapp->events()->emit("example_event", &m_testValue); });
+    m_vapp->actions()->add("app.event_test", "Action: Example Action with Event trigger", [this]() {
+        m_vapp->events()->emit("example_event", &m_testValue);
+    });
     m_vapp->actions()->addKeybinding("app.event_test", {GLFW_KEY_F, false, false, false});
 }
 
 ExampleClass::~ExampleClass() {
     spdlog::debug("Destructor ExampleClass");
 }
-
-

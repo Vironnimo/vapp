@@ -1,6 +1,10 @@
-.idea/
+.github/
+.cache/
 .vscode/
+.idea/
 build/
 .clang-format
-.clang-tidy
+.clangd
+.drawio
+CMakeUserPresets.json
 TODO.md

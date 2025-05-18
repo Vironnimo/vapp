@@ -24,14 +24,6 @@ Vapp::Vapp(AppSettings settings) : m_settings(std::make_shared<AppSettings>(std:
 }
 
 void Vapp::init() {
-    // #if defined(_DEBUG)
-    // spdlog::set_level(spdlog::level::debug);
-    //     spdlog::debug("Build Configuration: Debug");
-    // #else
-    //     // log to file
-    //     auto file_logger = spdlog::basic_logger_mt("file_logger", "logs.txt");
-    //     spdlog::set_default_logger(file_logger);
-    // #endif
     log.setLogLevel(m_settings->logLevel);
     if (m_settings->useFileLogger) {
         log.useFileLogger(m_settings->loggerFile);

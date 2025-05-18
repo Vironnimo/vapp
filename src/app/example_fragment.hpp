@@ -5,7 +5,7 @@
 class TestFragment : public Vapp::IFragment {
    public:
     TestFragment();
-    ~TestFragment();
+    ~TestFragment() override;
     void draw() override;
 
    private:

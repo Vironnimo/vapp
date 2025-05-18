@@ -1,8 +1,5 @@
 #include "example_fragment.hpp"
 
-#include <imgui.h>
-#include <spdlog/spdlog.h>
-
 #include "vapp/vapp.hpp"
 
 TestFragment::TestFragment() {

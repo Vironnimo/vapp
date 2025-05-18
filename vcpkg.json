@@ -9,6 +9,7 @@
     "opengl",
     "curl",
     "nlohmann-json",
+    "portaudio",
     "sdl2",
     "sdl2-mixer",
     "sdl2-image",

@@ -9,7 +9,6 @@ class App {
    public:
     int m_appValue = 1337;
 
-   public:
     App();
     ~App();
     void loadResources();
@@ -21,6 +20,5 @@ class App {
     std::shared_ptr<Vapp::Vapp> m_vapp;
     std::unique_ptr<ExampleClass> m_exampleClass;
 
-   private:
     void init();
 };

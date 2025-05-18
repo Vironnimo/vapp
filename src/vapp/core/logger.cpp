@@ -25,16 +25,16 @@ void Logger::useFileLogger(const std::string& logFile) {
 void Logger::setLogLevel(LogLevel level) {
     switch (level) {
         case LogLevel::debug:
-    spdlog::set_level(spdlog::level::debug);
+            spdlog::set_level(spdlog::level::debug);
             break;
         case LogLevel::info:
-    spdlog::set_level(spdlog::level::info);
+            spdlog::set_level(spdlog::level::info);
             break;
         case LogLevel::warn:
-    spdlog::set_level(spdlog::level::warn);
+            spdlog::set_level(spdlog::level::warn);
             break;
         case LogLevel::error:
-    spdlog::set_level(spdlog::level::err);
+            spdlog::set_level(spdlog::level::err);
             break;
     }
 }
