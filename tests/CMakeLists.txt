@@ -5,9 +5,6 @@ find_package(nlohmann_json CONFIG REQUIRED)
 find_package(CURL REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(SQLiteCpp CONFIG REQUIRED)
-find_package(SDL2 CONFIG REQUIRED)
-find_package(SDL2_mixer CONFIG REQUIRED)
-find_package(SDL2_image CONFIG REQUIRED)
 
 if (MSVC)
     add_compile_options(/utf-8)
@@ -45,9 +42,6 @@ target_link_libraries(${PROJECT_NAME}_tests PRIVATE
     CURL::libcurl
     nlohmann_json::nlohmann_json
     SQLiteCpp
-    SDL2::SDL2
-    SDL2_mixer::SDL2_mixer
-    SDL2_image::SDL2_image
 )
 
 add_test(NAME AllTests COMMAND ${PROJECT_NAME}_tests)

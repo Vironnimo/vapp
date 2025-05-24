@@ -26,6 +26,23 @@ void TestFragment::draw() {
         sound->play();
     }
 
+    if (ImGui::Button("Start Recording")) {
+        spdlog::info("Button: starting recording");
+        m_vapp->audioRecorder()->startRecord();
+    }
+
+    if (ImGui::Button("Stop Recording")) {
+        spdlog::info("Button: stopping recording");
+        m_vapp->audioRecorder()->stopRecord();
+        m_vapp->audioRecorder()->saveToFile("resources/sounds/recording_from_inside.wav");
+    }
+
+    if (ImGui::Button("Speech to Text")) {
+        spdlog::info("Button: converting speech to text");
+        auto result = m_vapp->speechToText()->read("resources/sounds/recording_from_inside.wav");
+        spdlog::info("Transcription JSON → {}", result);
+    }
+
     auto* img = m_vapp->resources()->get<Vapp::Image>("snake");
     ImGui::Image(img->getTexture(), ImVec2(img->getWidth() * 0.5, img->getHeight() * 0.5));
 

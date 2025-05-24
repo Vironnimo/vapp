@@ -5,7 +5,6 @@
 #include <vosk/vosk_api.h>
 
 #include "vapp/vapp.hpp"
-#include "audio_recorder.hpp"
 
 void ExampleClass::databaseExamples() {
     m_vapp->database()->exec("DROP TABLE IF EXISTS test");
@@ -26,33 +25,6 @@ void ExampleClass::databaseExamples() {
 
 ExampleClass::ExampleClass(std::shared_ptr<Vapp::Vapp> vapp) : m_vapp(std::move(vapp)) {
     spdlog::debug("Constructor ExampleClass");
-
-    // audio recorder
-    auto recorder = std::make_shared<AudioRecorder>();
-    if (!recorder->initialize()) {
-        spdlog::error("Failed to initialize audio recorder");
-        return;
-    }
-    recorder->recordToFile("resources/sounds/recording_from_inside.wav", 10);
-
-    // vosk stuff
-    VoskModel *model = vosk_model_new("resources/vosk-model-small-en-us-0.15");
-    VoskRecognizer *rec = vosk_recognizer_new(model, 16000.0f);
-
-    // loading a small WAV for test:
-    std::ifstream wf("resources/sounds/recording.wav", std::ios::binary);
-    wf.seekg(44);  // skip WAV header
-    std::vector<char> buf(4096);
-    while (wf.read(buf.data(), buf.size()) || wf.gcount()) {
-        vosk_recognizer_accept_waveform(rec, buf.data(), wf.gcount());
-    }
-
-    // json result
-    const char *json_res = vosk_recognizer_final_result(rec);
-    spdlog::info("Transcription JSON → {}", json_res);
-
-    vosk_recognizer_free(rec);
-    vosk_model_free(model);
 
     // chatgpt request
     // auto gptKey = ;

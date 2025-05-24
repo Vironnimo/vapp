@@ -5,10 +5,6 @@ find_package(CURL REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
-find_package(SDL2 CONFIG REQUIRED)
-find_package(SDL2_mixer CONFIG REQUIRED)
-find_package(SDL2_image CONFIG REQUIRED)
-find_package(portaudio CONFIG REQUIRED)
 
 # vosk
 set(VOSK_ROOT "${CMAKE_SOURCE_DIR}/vendor/vosk")
@@ -34,12 +30,14 @@ set(SOURCES
     vapp/core/timer.cpp
     vapp/core/logger.cpp
     vapp/core/network.cpp
+    vapp/core/audio_recorder.cpp
     vapp/gui/gui.cpp
     vapp/gui/theme.cpp
     vapp/gui/i_fragment.hpp
     app/app.cpp
     app/example_class.cpp
     app/example_fragment.cpp
+    vapp/core/speech_to_text.cpp
 )
 
 add_executable(${PROJECT_NAME} 
@@ -54,11 +52,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     nlohmann_json::nlohmann_json
     glfw
     OpenGL::GL
-    portaudio
     vconfig
-    SDL2::SDL2
-    SDL2_mixer::SDL2_mixer
-    SDL2_image::SDL2_image
     "${VOSK_ROOT}/libvosk.lib"
 )
 

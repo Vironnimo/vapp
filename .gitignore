@@ -8,3 +8,4 @@ build/
 .drawio
 CMakeUserPresets.json
 TODO.md
+resources/vosk/de-0.21/

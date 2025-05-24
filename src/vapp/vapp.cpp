@@ -16,6 +16,9 @@
 #include "vapp/core/timer.hpp"
 #include "vapp/gui/gui.hpp"
 #include "vapp/core/network.hpp"
+#include "vapp/core/audio_recorder.hpp"
+#include "vapp/core/speech_to_text.hpp"
+
 
 namespace Vapp {
 
@@ -43,6 +46,11 @@ void Vapp::init() {
     initActions();
     m_gui = std::make_unique<Gui>(this);
     m_network = std::make_unique<Network>(); 
+    m_audioRecorder = std::make_shared<AudioRecorder>();
+    m_audioRecorder->initialize();
+    m_audioRecorder->setAmplification(5.0f);  
+    m_speechToText = std::make_shared<SpeechToText>();
+    m_speechToText->init();
 
     // testing
 }
@@ -95,6 +103,14 @@ std::shared_ptr<AppSettings> Vapp::settings() {
 
 std::shared_ptr<Network> Vapp::network() {
     return m_network;
+}
+
+std::shared_ptr<AudioRecorder> Vapp::audioRecorder() {
+    return m_audioRecorder;
+}
+
+std::shared_ptr<SpeechToText> Vapp::speechToText() {
+    return m_speechToText;
 }
 
 void Vapp::attachFragment(std::unique_ptr<IFragment> fragment) {
