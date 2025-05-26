@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -20,6 +20,16 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/vendor)
 
 add_subdirectory(src)
+add_subdirectory(examples/app)
 
 enable_testing()
 add_subdirectory(tests)
+
+# when not lowercasing the drive in the path, clangd will have problems.
+if(CMAKE_EXPORT_COMPILE_COMMANDS)
+  add_custom_target(post_compile_commands ALL
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/lowercase_paths.cmake
+    COMMENT "Converting drive letters to lowercase in compile_commands.json"
+    VERBATIM
+  )
+endif()

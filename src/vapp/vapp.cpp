@@ -12,13 +12,12 @@
 #include "vapp/core/app_settings.hpp"
 #include "vapp/core/database.hpp"
 #include "vapp/core/event_system.hpp"
-#include "vapp/core/logger.hpp"
 #include "vapp/core/timer.hpp"
 #include "vapp/gui/gui.hpp"
 #include "vapp/core/network.hpp"
 #include "vapp/core/audio_recorder.hpp"
 #include "vapp/core/speech_to_text.hpp"
-
+#include "vapp/core/ai_request.hpp"
 
 namespace Vapp {
 
@@ -27,11 +26,6 @@ Vapp::Vapp(AppSettings settings) : m_settings(std::make_shared<AppSettings>(std:
 }
 
 void Vapp::init() {
-    log.setLogLevel(m_settings->logLevel);
-    if (m_settings->useFileLogger) {
-        log.useFileLogger(m_settings->loggerFile);
-    }
-
     spdlog::debug("Constructor Vapp");
 
     m_timer = std::make_shared<Timer>();
@@ -51,6 +45,8 @@ void Vapp::init() {
     m_audioRecorder->setAmplification(5.0f);  
     m_speechToText = std::make_shared<SpeechToText>();
     m_speechToText->init();
+    m_aiRequest = std::make_shared<AiRequest>();
+    m_aiRequest->init(m_network);
 
     // testing
 }
@@ -70,7 +66,6 @@ void Vapp::run() {
 
     while (!m_gui->windowShouldClose) {
         m_timer->update();
-        // spdlog::debug("FPS: {}", m_timer->getFps());
 
         m_actions->handleInput(m_gui->getWindow());
         m_gui->render();
@@ -111,6 +106,10 @@ std::shared_ptr<AudioRecorder> Vapp::audioRecorder() {
 
 std::shared_ptr<SpeechToText> Vapp::speechToText() {
     return m_speechToText;
+}
+
+std::shared_ptr<AiRequest> Vapp::aiRequest() {
+    return m_aiRequest;
 }
 
 void Vapp::attachFragment(std::unique_ptr<IFragment> fragment) {

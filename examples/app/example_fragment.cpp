@@ -40,7 +40,10 @@ void TestFragment::draw() {
     if (ImGui::Button("Speech to Text")) {
         spdlog::info("Button: converting speech to text");
         auto result = m_vapp->speechToText()->read("resources/sounds/recording_from_inside.wav");
-        spdlog::info("Transcription JSON → {}", result);
+        spdlog::info("Transcription: {}", result);
+
+        auto response = m_vapp->aiRequest()->requestCommand(result);
+        spdlog::info("AI Command: {}", response.command);
     }
 
     auto* img = m_vapp->resources()->get<Vapp::Image>("snake");

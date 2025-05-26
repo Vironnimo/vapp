@@ -73,8 +73,14 @@ void App::init() {
     m_vapp = std::make_shared<Vapp::Vapp>(settings);
 
     auto startTime = m_vapp->timer()->get("app.start");
-    Vapp::log.info("Vapp Startup Time: {} ms", startTime);
-    
+    spdlog::info("Vapp Startup Time: {} ms", startTime);
 
     m_exampleClass = std::make_unique<ExampleClass>(m_vapp);
+}
+
+int main() {
+    App app;
+    app.run();
+
+    return 0;
 }

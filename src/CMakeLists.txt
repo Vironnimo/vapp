@@ -10,41 +10,28 @@ find_package(OpenGL REQUIRED)
 set(VOSK_ROOT "${CMAKE_SOURCE_DIR}/vendor/vosk")
 include_directories("${VOSK_ROOT}")
 
-# load vconfig directly from git
-include(FetchContent)
-FetchContent_Declare(
-    vconfig
-    GIT_REPOSITORY https://github.com/ViroJB/vconfig.git
-    GIT_TAG        main
-)
-FetchContent_MakeAvailable(vconfig)
-
 set(SOURCES
     vapp/vapp.cpp
-    vapp/core/entry_point.cpp
     vapp/core/app_settings.hpp
     vapp/core/database.cpp
     vapp/core/actions.cpp
     vapp/core/event_system.cpp
     vapp/core/resource_manager.cpp
     vapp/core/timer.cpp
-    vapp/core/logger.cpp
     vapp/core/network.cpp
     vapp/core/audio_recorder.cpp
     vapp/gui/gui.cpp
     vapp/gui/theme.cpp
     vapp/gui/i_fragment.hpp
-    app/app.cpp
-    app/example_class.cpp
-    app/example_fragment.cpp
     vapp/core/speech_to_text.cpp
+    vapp/core/ai_request.cpp
 )
 
-add_executable(${PROJECT_NAME} 
+add_library(${PROJECT_NAME} STATIC
     ${SOURCES}
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE 
+target_link_libraries(${PROJECT_NAME} PUBLIC 
     spdlog::spdlog
     SQLiteCpp
     imgui::imgui
@@ -52,7 +39,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     nlohmann_json::nlohmann_json
     glfw
     OpenGL::GL
-    vconfig
     "${VOSK_ROOT}/libvosk.lib"
 )
 

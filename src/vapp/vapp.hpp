@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "core/ai_request.hpp"
 #include "core/speech_to_text.hpp"
 #include "vapp/core/app_settings.hpp"
 #include "vapp/core/actions.hpp"
@@ -13,6 +14,7 @@
 #include "vapp/core/database.hpp"
 #include "vapp/core/network.hpp"
 #include "vapp/core/audio_recorder.hpp"
+#include "vapp/core/ai_request.hpp"
 
 namespace Vapp {
 
@@ -32,6 +34,7 @@ class Vapp {
     std::shared_ptr<Network> network();
     std::shared_ptr<AudioRecorder> audioRecorder();
     std::shared_ptr<SpeechToText> speechToText();
+    std::shared_ptr<AiRequest> aiRequest();
 
     void attachFragment(std::unique_ptr<IFragment> fragment);
 
@@ -48,6 +51,7 @@ class Vapp {
     std::shared_ptr<Network> m_network;
     std::shared_ptr<AudioRecorder> m_audioRecorder;
     std::shared_ptr<SpeechToText> m_speechToText; 
+    std::shared_ptr<AiRequest> m_aiRequest;
 };
 
 }  // namespace Vapp

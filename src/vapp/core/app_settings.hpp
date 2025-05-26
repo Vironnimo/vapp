@@ -2,7 +2,6 @@
 
 #include <string>
 #include <functional>
-#include "vapp/core/logger.hpp"
 
 namespace Vapp {
 
@@ -18,11 +17,6 @@ struct AppSettings {
 
     // todo should be just a method in gui like setMenuCallback?
     std::function<void()> menuCallback;
-
-    // logger settings
-    LogLevel logLevel = LogLevel::debug;
-    bool useFileLogger = false;
-    std::string loggerFile = "vapp.log";
 };
 
 }  // namespace Vapp

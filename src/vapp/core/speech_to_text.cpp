@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <vosk/vosk_api.h>
+#include <nlohmann/json.hpp>
 
 namespace Vapp {
 
@@ -32,7 +33,13 @@ std::string SpeechToText::read(const std::string &filePath) {
         vosk_recognizer_accept_waveform(rec, buf.data(), wf.gcount());
     }
 
-    const auto* result = vosk_recognizer_final_result(rec);
+    std::string result = vosk_recognizer_final_result(rec);
+    nlohmann::json jsonResult = nlohmann::json::parse(result);
+    if (jsonResult.contains("text")) {
+        result = jsonResult["text"].get<std::string>();
+    } else {
+        result = "No text recognized";
+    }
     vosk_recognizer_free(rec);
 
     return result;
